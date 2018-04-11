@@ -1,13 +1,13 @@
-import {Component, Prop} from '@stencil/core';
-import {RouterHistory} from '@stencil/router';
+import { Component, Prop } from '@stencil/core';
+import { RouterHistory } from '@stencil/router';
 
 @Component({
-    tag: 'abc-login',
+    tag: 'abc-login' ,
     styleUrl: 'abc-login.css'
 })
 export class ABCLogin {
 
-    @Prop() history: RouterHistory;
+    @Prop() history:RouterHistory;
 
     processForm(e) {
         e.preventDefault();
@@ -16,23 +16,23 @@ export class ABCLogin {
         let code = e.target[1].value;
 
         fetch('http://localhost:8081/tests', {
-            method: 'POST',
-            body: JSON.stringify({
-                person: person,
-                code: code
+            method : 'POST' ,
+            body : JSON.stringify({
+                person : person ,
+                code : code
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
-            response.json().then((response) => {
-                console.log(response);
-                this.history.push('/test/'+response.code, {});
-            })
-
+        }).then(response => {
+            if (response.status == 200) {
+                return response.json();
+            }
+        }).then((json) => {
+            this.history.push('/test/' + json.code, {});
         }).catch((error) => {
-            console.log(error.json());
+            console.log(error);
         });
     }
 
@@ -41,17 +41,17 @@ export class ABCLogin {
             <div>
                 <h1>Login</h1>
 
-                <form onSubmit={(e) => this.processForm(e)}>
+                <form onSubmit={ (e) => this.processForm(e) }>
 
                     <label>
                         Person:
-                        <input name="person"/>
-                    </label><br/>
+                        <input name="person" />
+                    </label><br />
 
                     <label>
                         Code:
-                        <input name="code"/>
-                    </label><br/>
+                        <input name="code" />
+                    </label><br />
 
                     <button type="submit">start</button>
 
